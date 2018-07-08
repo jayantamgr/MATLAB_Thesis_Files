@@ -14,8 +14,7 @@ ST=[0];
 M123=[5 5 5 5 5 -inf -inf -inf; 
       5 5 5 5 5    5 -inf -inf;
       5 5 5 5 5 -inf -inf -inf];
-%%modifiied
-  
+M321 = [0 0 0; 0 0 0; 0 0 0];  
 [leni,brea]=size(M123);
 naap=length(ST)+leni*brea;
 M123_i=M123;
@@ -355,10 +354,145 @@ count=count+1;
     if mir==operations
         stseq=gooseq;
        stW=gooW;
-   end
+    end
+
+%% Shared resources among two AGVs
+
+Iindexi=[2 21; 3 17];
+T2=[5 5;
+    5 5];
+
+[damP ratan]=size(T2);
+
+[kiku rini]=size(Iindexi); 
+
+for i=1:damP 
+    Ttemp1(:,:,i)=perms(T2(i,:)); 
+    for p=1:kiku
+        V3(:,:,p)=perms(Iindexi(p,:));
+    end
+end
+
+[bhaiti,akon]=size(Iindexi);
+mac=bhaiti;
+N=akon;len=0;
+i=1;ii=i;p=mac; storV1=zeros(ii,N,mac);storT1=zeros(ii,N,mac);
+ne=0;
+[bhaiti,akon]=size(Iindexi);
+storgoodV2=[];storgoodT2=[];storelen1=[]; 
+for j=1:bhaiti 
+joBI=Iindexi(j,:);
+
+Tm=T2(j,:);ge=0;
+[ goodV1,goodT1 ] = seeds( N,joBI,T2,A); 
+[rot,len]=size( goodV1);
+storelen1=[storelen1;rot]; 
+storgoodV2=[storgoodV2;goodV1];
+storgoodT2=[storgoodT2 ;goodT1];
+end
+Ball1=0;
+for iml=1:length(storelen1)
+ Ball1=Ball1+ storelen1(iml);
+end
+
+SG2=storgoodV2;
+ST2=storgoodT2;
+
+bre1=1;
+[vik prem]=size(SG2);
+[kak ding]=size(ST2); 
+[ravi kisan]=size(A);
+NL2=storelen1;
+
+W2=-inf(ravi, kisan, vik, bre1);
+for f=1:bre1  
+    dTtemp=ST2(:,:,f);
+    V=SG2(:,:,f) ;
+   for n=1:vik    % permutation of 1 op set
+       for j=2:ding  % columns of T
+         for   k=1:j-1        
+                 
+    W2(V(n,j)+1,V(n,k)+1,n,f)= dTtemp(n,k);    
+         end        
+      end
+    end
+end
+
+operations1=leni*brea;  
+
+ OW1=[];NLc1=0;
+
+OW1=W2; 
+ NLc1=NL2;
+ ONLc1=NL2;
+
+% for i=2:length(ONLc1)
+% ONLc1(i)=ONLc1(i)+ONLc1(i-1);
+% end
+% 
+% for i=2
+% NLc1(i)=NLc1(i)+NLc1(i-1);
+% end
+
+stseq1=[];stW1=[];Orggv2=[];
+gooseq1=[];
+
+ Orggv2=storgoodV2;
+
+ [loni moni]=size(storgoodV2); 
+
+ counts1=1;ceig1=[];
+ gooseq1=[];gooW1=[];storseq1=[];
+
+for c=1:length(NL2)
+       count1=0;
+       toc
+       
+    for a=1:NLc1(c)
+    for b=ONLc1(c):ONLc1(c)
+  %###################################### 
+        if counts1==0  
+   
+    W2=gooW1;
+    storgoodV2=gooseq1;
+   for zz=2:length(NLc1)
+   NLc1(zz)= NLc1(zz)+NLc1(zz-1) ;  
+    end          
+            gooseq1=[];
+%         
+        end
+    end   
+% %        
+% %        %########################################      
+      counts1=counts1+1;
+        sW1=0;
+        sW1=addition(W2(:,:,a),OW1(:,:,b));
+        APB1=addition( A,sW1 );
+[cyvec, eigv, circ]=HowardA(APB1);
+eig=max(cyvec);
+ceig1=[ceig1 eig];
+if eig==0
+count1=count1+1;  
+ st1=[storgoodV2(a,:) Orggv2(b,:)];
+    gooseq1(count1,:)=st1; 
+    gooW1(:,:,count1)=sW1;
+    st1=[];
+ end
+  end
+  end
+   [nl1,nw1]=size(gooseq1);
+    NLc1(c)=0;
+    NLc1(c+1)=nl1;
+    counts1=0;
+    [nib1,mir1]=size(gooseq1);
+    if mir1==operations1
+        stseq1=gooseq1;
+       stW1=gooW1;
+    end
 
    
       [sdo,jto,de]=size(gooW);
+      [tin,tim,tq]=size(gooW1);
 
   E=zeros(operations+1,1);Ti=0;T=0;
 
@@ -367,111 +501,21 @@ for soo=1:leni
 end
 
 T3=Ti';
-  COT=[];DOT=[];Tf=[];    
+  CT=[];DT=[];Tf=[];    
 
 for y=1:de
-  APB1=addition(A,gooW(:,:,y));   
- Akl  = powers( APB1,operations );
+    for z=1:tq
+  APB1=addition(A,gooW(:,:,y));
+  APB3=addition(A,gooW1(:,:,z));
+  APB4=addition(APB1,APB3);
+ Akl  = powers( APB4,operations );
  D=multiplication( Akl,E );
- COT(:,y)=D;
- DOT(:,y)=D+T;
+ CT(:,y)=D;
+ DT(:,y)=D+T3; 
+    end
 end
-
 for s=1:de
-    Tf(s)=max(DOT(:,s));
+    Tf(s)=max(DT(:,s));
 end
 [indx1 mintf]=min(Tf);
-
-
-%% Shared resources among two AGVs
-
-% Iindexi=[2 21; 3 17];
-% T2=[5 5;
-%     5 5];
-% 
-% [damP ratan]=size(T2);
-% 
-% [kiku rini]=size(Iindexi); 
-% 
-% for i=1:damP 
-%     Ttemp1(:,:,i)=perms(T2(i,:));
-%     for p=1:kiku
-%         V3(:,:,p)=perms(Iindexi(p,:));
-%     end
-% end
-% 
-% [bhaiti,akon]=size(Iindexi);
-% mac=bhaiti;
-% N=akon;len=0;
-% i=1;ii=i;p=mac; storV1=zeros(ii,N,mac);storT1=zeros(ii,N,mac);
-% ne=0;
-% [bhaiti,akon]=size(Iindexi);
-% storgoodV2=[];storgoodT2=[];storelen2=[]; 
-% for j=1:bhaiti 
-% joBI=Iindexi(j,:);
-% 
-% Tm=T2(j,:);ge=0;
-% [ goodV1,goodT1 ] = seeds( N,joBI,T2,A); 
-% [rot,len]=size( goodV1);
-% storelen=[storelen;rot]; 
-% storgoodV2=[storgoodV2;goodV1];
-% storgoodT2=[storgoodT2 ;goodT1];
-% end
-% Ball1=0;
-% for iml=1:length(storelen2)
-%  Ball1=Ball1+ storelen2(iml);
-% end
-% 
-% SG2=storgoodV2;
-% ST2=storgoodT2;
-% 
-% bre1=1;
-% [vik prem]=size(SG2);
-% [kak ding]=size(ST2); 
-% [ravi kisan]=size(A);
-% NL2=storelen2;
-% 
-% W2=-inf(ravi, kisan, vik, bre1);
-% for f=1:bre1  
-%     dTtemp=ST1(:,:,f);
-%     V=SG2(:,:,f) ;
-%    for n=1:vik    % permutation of 1 op set
-%        for j=2:ding  % columns of T
-%          for   k=1:j-1        
-%                  
-%     W2(V(n,j)+1,V(n,k)+1,n,f)= dTtemp(n,k);    
-%          end        
-%       end
-%     end
-% end
-% WW1=W1;
-% WW2=W2;
-% 
-% % for bb=1:WW1
-% %     
-% %    for cc=1:WW2
-% %        ABP=addition(:,:,WW1,:,:,WW2);
-% %        ABP1=addition(A,ABP);
-% %    end
-% % end
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
 
