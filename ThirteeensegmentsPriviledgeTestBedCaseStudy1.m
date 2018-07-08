@@ -24,7 +24,7 @@
 %%Defining the segments
 %%AGV speed is 3m/s, so we have to calculate the time that an AGV will
 %%take in all the segments.
-
+%%modified
 A=7; %%Station1
 B=12;
 C=7; %%Station2
